@@ -14,7 +14,8 @@ public:
 
 	void Update();
 	void Move();
-	virtual void UseAbility(Platform& platform) = 0;
+	virtual void UseAbility(Platform& platform);
+
 
 };
 

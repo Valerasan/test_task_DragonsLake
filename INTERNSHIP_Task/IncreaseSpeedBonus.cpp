@@ -11,6 +11,7 @@ IncreaseSpeedBonus::~IncreaseSpeedBonus()
 
 void IncreaseSpeedBonus::UseAbility(Platform& platform)
 {
+	Bonus::UseAbility(platform);
 	platform.SetTickTime(getTickCount());
 	platform.IncreaseSpeed();
 }

@@ -1,4 +1,5 @@
 #include "Bonus.h"
+#include "Bonus.h"
 
 Bonus::Bonus(int x, int y, const char* path) : BaseSprite(path)
 {
@@ -20,4 +21,9 @@ void Bonus::Update()
 void Bonus::Move()
 {
 	MoveSprite(0, 1);
+}
+
+void Bonus::UseAbility(Platform& platform)
+{
+	dead = true;
 }

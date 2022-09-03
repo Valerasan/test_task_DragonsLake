@@ -3,9 +3,9 @@
 #include "Platfrom.h"
 #include "Ball.h"
 #include "Bricks.h"
-#include "WhiteBrick.h"
+#include "GoldBrick.h"
 #include "GreenBrick.h"
-#include "GoldBrick.h";
+#include "WhiteBrick.h";
 #include "Bonus.h"
 #include <vector>
 
@@ -51,7 +51,6 @@ public:
 		
 		platform = new Platform();
 		ball = new Ball(platform);
-		//bonus = new Bonus(120, 120);
 		for (int i = 0; i < 8; i++)
 		{
 			bricks[i] = new GoldBrick();
@@ -80,8 +79,10 @@ public:
 		//delete[] bricks;
 	}
 
-	virtual bool Tick() {
-
+	virtual bool Tick() 
+	{
+		Update();
+		
 		if (IsGameOver)
 		{
 			ClearAll();
@@ -120,7 +121,7 @@ public:
 			if (bonus->IsOverlap(platform))
 			{
 				bonus->UseAbility(*platform);
-				bonus->dead = true;
+				
 				bonuses.erase(remove_if(bonuses.begin(), bonuses.end(), [](const Bonus* i_bonus)
 					{ return 1 == i_bonus->dead; }), bonuses.end());
 			}
@@ -281,6 +282,12 @@ public:
 		for (int i = 0; i < 24; i++)
 			bricks[i]->Start();
 
+		for (Bonus* bonus : bonuses)
+		{
+			bonus->dead = true;
+		}
+		bonuses.erase(remove_if(bonuses.begin(), bonuses.end(), [](const Bonus* i_bonus)
+			{ return 1 == i_bonus->dead; }), bonuses.end());
 		score = 0;
 		combo = 0;
 	}

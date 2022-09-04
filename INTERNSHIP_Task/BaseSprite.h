@@ -2,8 +2,9 @@
 
 #include "Framework.h"
 #include <cmath>
-#include <iostream>
+#include "Global.h"
 
+ 
 struct Rect
 {
 public:
@@ -33,26 +34,16 @@ public:
 	int hight;
 };
 
-//enum Direction {
-//	UP,
-//	RIGHT,
-//	DOWN,
-//	LEFT
-//};
-
-
-
-
-
+// Base class
 class BaseSprite
 {
 
 private:
 	Sprite* m_Sprite;
-	
 
 public:
 	Rect SpriteRect;
+
 
 	BaseSprite(const char* path);
 	BaseSprite();
@@ -67,22 +58,16 @@ public:
 
 	void MoveSprite(int x, int y);
 
-	bool IsOverlap(BaseSprite* overlapSprite, bool& reght);
+	bool IsOverlap(BaseSprite* overlapSprite, bool& right);
 	bool IsOverlap(BaseSprite* overlapSprite);
 
-
+	// the direction of flight is calculated using the normalized vector
 	void normalDirection(int Ax, int Ay, int Bx, int By, float& Result_X, float& Result_Y)
 	{
 		int dir_x = Ax - Bx;
 		int dir_y = Ay - By;
-		//std::cout <<"Start " << SpriteRect.x + SpriteRect.width / 2 << " " << SpriteRect.y + SpriteRect.hight / 2 << std::endl;
-		//std::cout << "End " << x << " " << y << std::endl;
-		//std::cout << "Direct " << dir_x << " " << dir_y << std::endl;
 		float length = sqrt(pow(dir_x, 2) + pow(dir_y, 2));
-		//std::cout << length << " " << y << std::endl;
-
 		float invLength = 1 / length;
-		//std::cout << invLength << " " << y << std::endl;
 
 		Result_X = invLength * dir_x;
 		Result_Y = invLength * dir_y;
@@ -98,6 +83,7 @@ public:
 	//	return sqrt(pow((twoX - oneX) , 2) + pow((twoY - oneY), 2));
 	//}
 
+	// improved collision but unfortunately does not work
 	//static Direction VectorDirection(Rect& one, Rect& two)
 	//{
 	//	float Result_X;
@@ -175,6 +161,10 @@ public:
 	//	return (Direction)best_match;
 	//	//return Direction::RIGHT;
 	//}
+
+protected:
+	int WIDTH;
+	int HIGHT;
 
 };
 

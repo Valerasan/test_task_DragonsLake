@@ -4,20 +4,13 @@
 BaseSprite::BaseSprite(const char* path)
 {
 	SetTexture(path);
-	
+	getScreenSize(WIDTH, HIGHT);
 }
 
 BaseSprite::BaseSprite()
 {
+	getScreenSize(WIDTH, HIGHT);
 }
-
-//BaseSprite::BaseSprite(int x, int y,
-//	int width, int hight,
-//	const char* path)
-//{
-//	SetTexture(path);
-//	SpriteRect = Rect(x, y, width, hight);
-//}
 
 BaseSprite::~BaseSprite()
 {
@@ -48,11 +41,6 @@ void BaseSprite::SetPosition(int x, int y)
 
 }
 
-//void BaseSprite::UpdateSpr()
-//{
-//
-//}
-
 void BaseSprite::Draw()
 {
 	drawSprite(m_Sprite, SpriteRect.x, SpriteRect.y);
@@ -66,7 +54,8 @@ void BaseSprite::MoveSprite(int x, int y)
 	SpriteRect.bottom += y;
 }
 
-bool BaseSprite::IsOverlap(BaseSprite* overlapSprite, bool& reght)
+// right - sets the trajectory by x
+bool BaseSprite::IsOverlap(BaseSprite* overlapSprite, bool& right)
 {
 
 
@@ -75,26 +64,20 @@ bool BaseSprite::IsOverlap(BaseSprite* overlapSprite, bool& reght)
 		SpriteRect.bottom >= overlapSprite->SpriteRect.y &&
 		overlapSprite->SpriteRect.bottom >= SpriteRect.y)
 	{
-		//std::cout << "Yes\n";
 		if (SpriteRect.x == overlapSprite->SpriteRect.right)
 		{
-			//std::cout << "Right\n";
-			reght = true;
+			right = true;
 		}	
 		else if (SpriteRect.right == overlapSprite->SpriteRect.x )
 		{
-			//std::cout << "Left\n";
-			reght = true;
-		}
-			
+			right = true;
+		}	
 		return true;
 	}
-
-
-		
 	return false;
 }
 
+// simple AABB-overlap
 bool BaseSprite::IsOverlap(BaseSprite* overlapSprite)
 {
 	if (SpriteRect.right >= overlapSprite->SpriteRect.x &&
@@ -104,6 +87,5 @@ bool BaseSprite::IsOverlap(BaseSprite* overlapSprite)
 	{
 		return true;
 	}
-
 	return false;
 }

@@ -1,4 +1,3 @@
-
 #include "Framework.h";
 #include "Platfrom.h"
 #include "Ball.h"
@@ -9,10 +8,6 @@
 #include "Bonus.h"
 #include <vector>
 
-
-
-
-/* Test Framework realization */
 class Game : public Framework {
 
 private:
@@ -23,6 +18,7 @@ private:
 	Platform * platform;
 	Ball* ball;
 	Bricks* bricks[24];
+	BaseSprite* background;
 	std::vector<Bonus*> bonuses;
 
 	
@@ -34,7 +30,8 @@ private:
 	int combo;
 
 	bool right = false;
-	bool IsGameOver = true;
+	bool IsGameOver;
+	bool gameStart;
 
 	int deadBlocks = 0;
 
@@ -42,8 +39,8 @@ public:
 
 	virtual void PreInit(int& width, int& height, bool& fullscreen)
 	{
-		width = 800;
-		height = 800;
+		width = WIDTH;
+		height = HIGHT;
 		fullscreen = false;
 	}
 
@@ -51,82 +48,69 @@ public:
 		
 		platform = new Platform();
 		ball = new Ball(platform);
+		background = new BaseSprite("data/Background.jpg");
+		
+		int W, H;
+		getScreenSize(W, H);
+		background->SetSize(W, H);
 		for (int i = 0; i < 8; i++)
 		{
-			bricks[i] = new GoldBrick();
-			bricks[i]->SetPosition(80 + 80 * i, 150);
+			bricks[i] = new GreenBrick();
+			bricks[i]->SetPosition((W * 0.1) + (W * 0.1) * i, (H * 0.1875));
 		}
 		for (int i = 0; i < 8; i++)
 		{
-			bricks[8 + i] = new GreenBrick();
-			bricks[8 + i]->SetPosition(80 + 80 * i, 170);
+			bricks[8 + i] = new WhiteBrick();
+			bricks[8 + i]->SetPosition((W * 0.1) + (W * 0.1) * i, (H* 0.2125));
 		}
 		for (int i = 0; i < 8; i++)
 		{
-			bricks[16 + i] = new WhiteBrick();
-			bricks[16 + i]->SetPosition(80 + 80 * i, 190);
+			bricks[16 + i] = new GoldBrick();
+			bricks[16 + i]->SetPosition((W * 0.1) + (W * 0.1) * i, (H * 0.2375));
 		}
 		
-		score = 0;
-		combo = 0;
+		 ClearAll();
 		return true;
 	}
 
 	virtual void Close() 
 	{
-		//delete platform;
-		//delete ball;
-		//delete[] bricks;
+		delete platform;
+		delete ball;
+		delete[] bricks;
+		delete background;
 	}
 
 	virtual bool Tick() 
 	{
 		Update();
 		
+		if(ball->IsOutOfBounds())
+			IsGameOver = true;
+
 		if (IsGameOver)
 		{
 			ClearAll();
 		}
 		
-		
+		// ball - platform contact
 		if (ball->IsOverlap(platform))
 		{
-			//BaseSprite::VectorDirection(ball->SpriteRect, platform->SpriteRect);
 			ball->move_y *= -1;
 			combo = 0;
-			//switch (BaseSprite::VectorDirection(ball->SpriteRect, platform->SpriteRect))
-			//{
-			//case Direction::DOWN:
-			//	std::cout << "D\n";
-			//	ball->move_y *= -1;
-			//	break;
-			//case Direction::UP:
-			//	std::cout << "u\n";
-			//	ball->move_y *= -1;
-			//	break;
-			//case Direction::RIGHT:
-			//	std::cout << "Rigth\n";
-			//case Direction::LEFT:
-			//	std::cout << "R\n";
-			//	ball->move_x *= -1;
-			//	break;
-			//default:
-			//	break;
-			//}
 		}
 
-
+		//bonuses - platform contact
 		for (Bonus* bonus : bonuses)
 		{
 			if (bonus->IsOverlap(platform))
 			{
 				bonus->UseAbility(*platform);
-				
-				bonuses.erase(remove_if(bonuses.begin(), bonuses.end(), [](const Bonus* i_bonus)
-					{ return 1 == i_bonus->dead; }), bonuses.end());
+				bonus->KillBonus(bonuses);
 			}
 		}
 			
+		//ball - bricks contact
 		for (Bricks* brick : bricks)
 		{
 			if (ball->IsOverlap(brick, right))
@@ -137,27 +121,6 @@ public:
 					break;
 				}
 				
-				//switch (BaseSprite::VectorDirection(ball->SpriteRect, brick->SpriteRect))
-				//{
-				//case Direction::DOWN:
-				//	std::cout << "DOWN\n";
-				//	ball->move_y *= -1;
-				//	break;
-				//case Direction::UP:
-				//	std::cout << "UP\n";
-				//	ball->move_y *= -1;
-				//	break;
-				//case Direction::RIGHT:
-				//	std::cout << "Rigth\n";
-				//	ball->move_x *= -1;
-				//	break;
-				//case Direction::LEFT:
-				//	std::cout << "Left\n";
-				//	ball->move_x *= -1;
-				//	break;
-				//default:
-				//	break;
-				//}
 				if (right)
 				{
 					right = false;
@@ -168,22 +131,23 @@ public:
 					ball->move_y *= -1;
 				}
 				
-			
-				//if (combo > 3)
-				//{
-				//	score += 60;
-				//}
-				//else
-				//{
-				//	score += 20;
-				//}
-				//std::cout << "Score: " << score << std::endl;
 				brick->loseHP();
 				if (brick->isDead())
 				{
 					combo++;
 					deadBlocks++;
 					brick->SpawnBonus(bonuses);
+					if (combo > 3)
+					{
+						score += 60;
+						std::cout << "Score: " << score << std::endl;
+					}	
+					else
+					{
+						score += 20;
+						std::cout << "Score: " << score << std::endl;
+					}
+
 					if (deadBlocks == 16)
 					{
 						IsGameOver = true;
@@ -194,10 +158,7 @@ public:
 			}
 		}
 
-
 		Render();
-		
-
 		return false;
 	}
 
@@ -212,7 +173,11 @@ public:
 		switch (button)
 		{
 		case FRMouseButton::right:
-			ball->Start(x_start, y_start);
+			if (!gameStart)
+			{
+				ball->Start(x_start, y_start);
+				gameStart = true;
+			}
 			break;
 		case FRMouseButton::MIDDLE:
 			break;
@@ -277,6 +242,11 @@ public:
 	void ClearAll()
 	{
 		IsGameOver = false;
+		gameStart = false;
+		score = 0;
+		combo = 0;
+
+		system("CLS");
 		platform->Start();
 		ball->Start();
 		for (int i = 0; i < 24; i++)
@@ -285,11 +255,8 @@ public:
 		for (Bonus* bonus : bonuses)
 		{
 			bonus->dead = true;
+			bonus->KillBonus(bonuses);
 		}
-		bonuses.erase(remove_if(bonuses.begin(), bonuses.end(), [](const Bonus* i_bonus)
-			{ return 1 == i_bonus->dead; }), bonuses.end());
-		score = 0;
-		combo = 0;
 	}
 
 	void Update()
@@ -298,13 +265,14 @@ public:
 		ball->Update();
 		for (Bonus* bonus : bonuses)
 		{
-			bonus->Update();
+			bonus->Update(bonuses);
 		}
 	}
 
 	void Render()
 	{
 		drawTestBackground();
+		background->Draw();
 		platform->Draw();
 		ball->Draw();
 
@@ -317,12 +285,45 @@ public:
 		{
 			if (!brick->isDead())
 				brick->Draw();
-
 		}
 	}
 };
 
+
 int main(int argc, char* argv[])
 {
+	std::vector<int> resolution;
+	bool found = false;
+	int number = 0;
+	if (!strcmp(argv[1], "-window"))
+	{
+		for (int i = 0; i < strlen(argv[2]); i++) {
+			const char ch = argv[2][i];
+			if (ch >= '0' && ch <= '9') {
+				const int digit = ch - '0';
+				number = number * 10 + digit;
+				found = true;
+			}
+			else {
+				if (found) {
+					resolution.push_back(number);
+
+					number = 0;
+					found = false;
+				}
+			}
+		}
+		if (found) {
+			resolution.push_back(number);
+		}
+	}
+	else
+	{
+		WIDTH = 800;
+		HIGHT = 800;
+	}
+	WIDTH = resolution[0];
+	HIGHT = resolution[1];
+
 	return run(new Game);
 }

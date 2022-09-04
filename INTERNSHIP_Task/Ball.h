@@ -5,13 +5,14 @@
 class Ball : public BaseSprite
 {
 private:
-	bool calm;
+	// if calm the ball will follow the platform
+	bool bIsCalm; 
+	bool bIsOutOfBounds;
+	// pointer platform followed by
 	Platform* platform;
 
-
-
 public:
-
+	//ball flight direction
 	float move_x;
 	float move_y;
 
@@ -25,5 +26,7 @@ public:
 
 	void Start(int x, int y);
 	void Borders();
+
+	bool IsOutOfBounds() { return bIsOutOfBounds; };
 
 };

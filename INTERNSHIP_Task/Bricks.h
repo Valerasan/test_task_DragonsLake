@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Framework.h"
-#include "BaseSprite.h"
 #include "Bonus.h"
 #include "IncreaseSpeedBonus.h"
 #include "DecreaseSpeedBonus.h"
@@ -16,6 +15,7 @@ public:
 	Bricks();
 	~Bricks();
 
+	
 	virtual void Start();
 
 

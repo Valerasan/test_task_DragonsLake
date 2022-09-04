@@ -155,6 +155,7 @@
     <ClInclude Include="Bonus.h" />
     <ClInclude Include="Bricks.h" />
     <ClInclude Include="DecreaseSpeedBonus.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="GoldBrick.h" />
     <ClInclude Include="GreenBrick.h" />
     <ClInclude Include="IncreaseSpeedBonus.h" />

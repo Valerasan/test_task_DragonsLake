@@ -11,10 +11,8 @@ GoldBrick::~GoldBrick()
 
 void GoldBrick::Start()
 {
-	Bricks::Start();
 	SetTexture("data/13-Breakout-Tiles.png");
-	SetSize(80, 20);
-	
+	Bricks::Start();
 }
 
 void GoldBrick::loseHP()

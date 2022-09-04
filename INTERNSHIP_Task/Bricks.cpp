@@ -9,9 +9,11 @@ Bricks::~Bricks()
 {
 }
 
+//should be called at the end
 void Bricks::Start()
 {
 	bIsDead = false;
+	SetSize(WIDTH * 0.1, HIGHT * 0.025);
 }
 
 void Bricks::SpawnBonus(std::vector<Bonus*>& bonuses)

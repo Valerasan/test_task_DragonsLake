@@ -27,10 +27,10 @@ public:
 
 	void Start();
 
-	//void Draw() override;
 	void IncreaseSpeed();
 	void DecreaseSpeed();
 	void SetNormalSpeed();
+
 	void Update(PMove& move);
 	void Move(PMove& move);
 	void Borders();

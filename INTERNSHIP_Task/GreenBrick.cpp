@@ -12,10 +12,9 @@ GreenBrick::~GreenBrick()
 
 void GreenBrick::Start()
 {
-	Bricks::Start();
 	HP = maxHP;
 	SetTexture("data/15-Breakout-Tiles.png");
-	SetSize(80, 20);
+	Bricks::Start();
 }
 
 void GreenBrick::loseHP()
@@ -24,11 +23,10 @@ void GreenBrick::loseHP()
 	if (HP < maxHP)
 	{
 		SetTexture("data/16-Breakout-Tiles.png");
-		SetSize(80, 20);
+		SetSize(SpriteRect.width, SpriteRect.hight);
 	}
 
 	bIsDead = HP <= 0 ? true : false;
-	//std::cout << bIsDead ? "Dead\n" : "No\n";
 }
 
 bool GreenBrick::isDead()

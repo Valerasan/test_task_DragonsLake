@@ -1,9 +1,6 @@
 #include "Platfrom.h"
 
-
-
 Platform::Platform() :BaseSprite("data/50-Breakout-Tiles.png")
-
 {
 }
 
@@ -13,8 +10,8 @@ Platform::~Platform()
 
 void Platform::Start()
 {
-	SetSize(150, 40);
-	SetPosition(200, 750);
+	SetSize(WIDTH * 0.1875, HIGHT * 0.05);
+	SetPosition(WIDTH / 2, HIGHT - SpriteRect.hight);
 	speed = normalSpeed;
 	Time = getTickCount();
 }
@@ -63,12 +60,13 @@ void Platform::Borders()
 {
 	if (SpriteRect.x < 0)
 		SetPosition(0, SpriteRect.y);
-	else if (SpriteRect.right > 800)
-		SetPosition(800 - SpriteRect.width, SpriteRect.y);
+	else if (SpriteRect.right > WIDTH)
+		SetPosition(WIDTH - SpriteRect.width, SpriteRect.y);
 }
 
+//sets the starting point
 void Platform::SetTickTime(int Time)
 {
 	this->Time = Time;
-	//std::cout << "Time set\n";
+
 }
